@@ -49,7 +49,7 @@ alias e="explorer.exe ."
 # Vagrant
 #-----------------------------------------------------------------------
 
-alias vup="vagrant up"
+alias vu="vagrant up"
 alias vshh="vagrant ssh"
 alias vs="vagrant suspend"
 alias vd="vagrant destroy"
