@@ -4,7 +4,8 @@
 
 alias ga="git add -A"
 alias gb="git branch"
-alias gc="git commit -m"
+alias gc="git commit"
+alias gcm="git commit -m"
 alias gd="git diff"
 alias gl="git log --graph"
 alias gm="git merge"
@@ -13,6 +14,7 @@ alias gp="git push"
 alias gu="git pull"
 alias gs="git status"
 alias gca="git rm -r --cached . && git add ."
+alias dsf="git diff --color | diff-so-fancy"
 
 #-----------------------------------------------------------------------
 # Changing directories
