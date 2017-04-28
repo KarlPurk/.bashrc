@@ -25,15 +25,33 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'sjl/gundo.vim'
 Plugin 'vim-scripts/CmdlineComplete'
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-scripts/LustyJuggler'
+Plugin 'tpope/vim-surround'
+Plugin 'joonty/vdebug'
+Plugin 'vim-scripts/argtextobj.vim'
+Plugin 'chaoren/vim-wordmotion'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'suan/vim-instant-markdown'
+Plugin 'tpope/vim-repeat'
+Plugin 'edsono/vim-matchit'
+Plugin 'vim-scripts/closetag.vim'
+Plugin 'chrisbra/Colorizer'
+Plugin 'mattn/emmet-vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'Raimondi/delimitMate'
+Plugin 'wikitopian/hardmode'
 
 " Languages
 Plugin 'leafgarland/typescript-vim'
+Plugin 'Quramy/tsuquyomi'
+Plugin 'Shougo/vimproc.vim'
 Plugin 'pangloss/vim-javascript'
+Plugin 'ElmCast/elm-vim'
 
 " Snippets
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
+Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 
 " All of your Plugins must be added before the following line
@@ -51,27 +69,12 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-
-
-" A minimal vimrc for new vim users to start with.
-"
-" Referenced here: http://www.benorenstein.com/blog/your-first-vimrc-should-be-nearly-empty/
-
-" Original Author:	 Bram Moolenaar <Bram@vim.org>
-" Made more minimal by:  Ben Orenstein
-" Last change:	         2012 Jan 20
-"
-" To use it, copy it to
-"     for Unix and OS/2:  ~/.vimrc
-"  for MS-DOS and Win32:  $VIM\_vimrc
-"
-"  If you don't understand a setting in here, just type ':h setting'.
-
 " Make backspace behave in a sane manner.
 set backspace=indent,eol,start
 
 " Switch syntax highlighting on
 syntax on
+syntax enable
 
 " Enable file type detection and do language-dependent indenting.
 filetype plugin indent on
@@ -130,17 +133,12 @@ colorscheme molokai
 :set tabstop=4 shiftwidth=4 expandtab
 
 " --------------------------------------------------------------------
-" Gundo - bind a key for the undo graph 
-" --------------------------------------------------------------------
-nnoremap <F5> :GundoToggle<CR>
-
-" --------------------------------------------------------------------
 " Ensure specified files are unfolded to the right level by default
 " --------------------------------------------------------------------
 
 " Note, perl automatically sets foldmethod in the syntax file
 autocmd Syntax c,cpp,javascript,vim,xml,html,xhtml,php setlocal foldmethod=syntax
-autocmd Syntax c,cpp,javascript,vim,xml,html,xhtml,php,perl normal zR
+autocmd Syntax c,cpp,javascript,vim,xml,html,xhtml,perl,php normal zR
 
 " --------------------------------------------------------------------
 " Remap leader key
@@ -148,6 +146,9 @@ autocmd Syntax c,cpp,javascript,vim,xml,html,xhtml,php,perl normal zR
 
 " let mapleader=","
 map <Space> <Leader>
+
+" Allow jj to exit insert mode
+inoremap jj <Esc>
 
 " --------------------------------------------------------------------
 " Display trailing whitespace
@@ -157,11 +158,107 @@ set list          " Display unprintable characters f12 - switches
 set listchars=tab:•\ ,trail:•,extends:»,precedes:« " Unprintable chars mapping
 
 " --------------------------------------------------------------------
-" Enable search highlights
+" Set search preferences
 " --------------------------------------------------------------------
-set hlsearch
-
+set nohlsearch
+set incsearch
+set ignorecase
+autocmd FileType typescript call s:typescript_filetype_settings()
+function! s:typescript_filetype_settings()
+    set makeprg=tsc
+endfunction
 " --------------------------------------------------------------------
 " Autosave when focus lost
 " --------------------------------------------------------------------
 au FocusLost * :wa
+
+" --------------------------------------------------------------------
+" Syntastic configuration
+" --------------------------------------------------------------------
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_javascript_checkers = ['jshint']
+
+let g:elm_syntastic_show_warnings = 1
+
+" --------------------------------------------------------------------
+" Remove scrollbars
+" --------------------------------------------------------------------
+
+set guioptions=
+
+" --------------------------------------------------------------------
+" Allow unwritten changes when switching buffers (avoids forced saving)
+" --------------------------------------------------------------------
+set hidden
+
+" --------------------------------------------------------------------
+" Map lusty buffer
+" --------------------------------------------------------------------
+map <Leader>f :LustyJuggler<Return>
+
+" --------------------------------------------------------------------
+" PHP specific
+" --------------------------------------------------------------------
+let php_folding = 1        "Set PHP folding of classes and functions.
+let php_htmlInStrings = 1  "Syntax highlight HTML code inside PHP strings.
+let php_sql_query = 1      "Syntax highlight SQL code inside PHP strings.
+let php_noShortTags = 1    "Disable PHP short tags.
+
+" --------------------------------------------------------------------
+" HTML - Enable HTML folding
+" --------------------------------------------------------------------
+augroup filetype_html
+    autocmd!
+    autocmd Syntax xml,html,xhtml syntax region htmlFold start="<\z(\<\(area\|base\|br\|col\|command\|embed\|hr\|img\|input\|keygen\|link\|meta\|para\|source\|track\|wbr\>\)\@![a-z-]\+\>\)\%(\_s*\_[^/]\?>\|\_s\_[^>]*\_[^>/]>\)" end="</\z1\_s*>" fold transparent keepend extend containedin=htmlHead,htmlH\d
+augroup END
+
+" --------------------------------------------------------------------
+" VDebug
+" --------------------------------------------------------------------
+" let g:vdebug_options['path_maps'] = {"/srv/www/": "/projects/work/vagrant-local/www/"}
+
+
+" --------------------------------------------------------------------
+" Custom commands
+" --------------------------------------------------------------------
+
+command OpenInChrome !open /Applications/Google\ Chrome.app %
+
+" --------------------------------------------------------------------
+" Enable spellchecking
+" --------------------------------------------------------------------
+setlocal spell spelllang=en_gb
+
+" --------------------------------------------------------------------
+" Enable copy and paste between instances of vim
+" --------------------------------------------------------------------
+set clipboard+=unnamed
+
+" --------------------------------------------------------------------
+" Configure UltiSnips plugin
+" --------------------------------------------------------------------
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+" --------------------------------------------------------------------
+" Enable hard mode by default
+" --------------------------------------------------------------------
+"autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
+
+" --------------------------------------------------------------------
+" Use tsc to for compiler
+" https://github.com/leafgarland/typescript-vim/pull/61
+" --------------------------------------------------------------------
+"autocmd FileType typescript call s:typescript_filetype_settings()
+"function! s:typescript_filetype_settings()
+    "set makeprg=tsc
+"endfunction
