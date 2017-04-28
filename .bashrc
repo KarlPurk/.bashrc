@@ -45,3 +45,15 @@ alias vshh="vagrant ssh"
 alias vs="vagrant suspend"
 alias vd="vagrant destroy"
 alias vp="vagrant provision"
+
+#-----------------------------------------------------------------------
+# Mac specific
+#-----------------------------------------------------------------------
+
+alias v="mvim"
+
+# --------------------------------------------------------------------
+# Always run node_module binaries over global binaries
+# --------------------------------------------------------------------
+
+export PATH="$PATH:./node_modules/.bin"
